@@ -1,4 +1,4 @@
-# Redis Sentinel Based HA Deployment in Kubernetes
+# Redis Sentinel Based HA cluster in Kubernetes
 
 This repository contains code for deploying HA enabled Redis in a minikube cluster.
 
