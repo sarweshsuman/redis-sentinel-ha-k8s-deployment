@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-ha-cluster-master-d1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-ha-cluster-redis-master-lbl
+  template:
+    metadata:
+      name: redis-ha-cluster-master-p1
+      labels:
+        app: redis-ha-cluster-redis-master-lbl
+        master: "true"
+    spec:
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: slave
+      #           operator: In
+      #           values:
+      #           - "true"
+      #       topologyKey: "kubernetes.io/hostname"
+      volumes:
+        - hostPath:
+            path: /tmp/data/1
+          name: redis-directory-binding
+
+      restartPolicy: Always
+
+      containers:
+      - name: redis-ha-cluster-redis-c1
+        image: redis-sentinel-ha-cluster:1.0
+
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: .2
+          limits:
+            memory: "200Mi"
+            cpu: .5
+
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - containerPort: 6379
+
+        volumeMounts:
+          - mountPath: /redis-data
+            name: redis-directory-binding
+            readOnly: false
+
+        env:
+        - name: MASTER
+          value: "true"

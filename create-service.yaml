@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: redis-ha-cluster-sentinel-service-lbl
+  name: redis-ha-cluster-sentinel-service
+spec:
+  ports:
+    - port: 26379
+  selector:
+    app: redis-ha-cluster-sentinel-lbl
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: redis-ha-cluster-startup-redis-master-service-lbl
+  name: redis-ha-cluster-startup-redis-master-service
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis-ha-cluster-redis-master-lbl

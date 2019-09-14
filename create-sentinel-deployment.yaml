@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-ha-cluster-sentinel-d1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis-ha-cluster-sentinel-lbl
+  template:
+    metadata:
+      name: redis-ha-cluster-sentinel-p1
+      labels:
+        app: redis-ha-cluster-sentinel-lbl
+    spec:
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: app
+      #           operator: In
+      #           values:
+      #           - redis-ha-cluster-sentinel-lbl
+      #       topologyKey: "kubernetes.io/hostname"
+
+      restartPolicy: Always
+
+      containers:
+      - name: redis-ha-cluster-sentinel-c1
+        image: redis-sentinel-ha-cluster:1.0
+
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: .2
+          limits:
+            memory: "200Mi"
+            cpu: .5
+
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - containerPort: 26379
+
+        env:
+        - name: SENTINEL
+          value: "true"
